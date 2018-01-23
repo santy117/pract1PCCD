@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
+
+void subir(int);
+void bajar(int);
+void terminate(int);
+
+int n_subidas, n_bajadas, salir, T_PISO;
+
+int main(int argc, char* argv[]){
+  n_subidas = 0;
+  n_bajadas = 0;
+  salir = 0;
+  T_PISO = 1;
+  int status;
+  struct sigaction act;
+  for(int i=1; i<65; i++){
+    act.sa_handler = SIG_IGN;
+    if(i==10){
+      act.sa_handler = subir;
+    }
+    else if(i==12){
+      act.sa_handler = bajar;
+    }
+    else if(i==3){
+      act.sa_handler = terminate;
+    }
+    sigaction(i, &act, NULL);
+  }
+  while(salir!=1)
+    pause();
+  return 0;
+}
+
+void subir(int signal){
+  printf("Sube el ascensor\n");
+}
+
+void bajar(int signal){
+  printf("Baja el ascensor\n");
+}
+
+void terminate(int signal){
+  salir = 1;
+}
